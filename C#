@@ -1,0 +1,47 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+
+namespace PartnerManager
+{
+    public partial class MainForm : Form
+    {
+        // Строка подключения к нашей базе данных
+        private string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=PartnerDB;Integrated Security=True;";
+
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+
+        // При загрузке формы загружаем данные
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            LoadTable("Products");
+        }
+
+        private void LoadTable(string tableName)
+        {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Простейший запрос - выбрать всё из таблицы
+                    string query = $"SELECT * FROM {tableName}";
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    DataTable table = new DataTable();
+                    adapter.Fill(table);
+
+                    // Выводим в DataGridView
+                    dataGridView1.DataSource = table;
+                }     
+        }
+
+        private void MainForm_Load_1(object sender, EventArgs e)
+        {
+            LoadTable("Partners");
+        }
+    }
+}
